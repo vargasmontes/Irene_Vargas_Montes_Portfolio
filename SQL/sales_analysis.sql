@@ -1,8 +1,3 @@
--- ==== ReadMe ====
--- This is an eCommerce Sales Dataset from Kaggle available here: https://www.kaggle.com/datasets/abbas829/ecommerce-sales-dataset?resource=download
--- We will be looking at some questions that the data helps answer.
--- This is code for SQL Server
-
 -- ==== Rename imported database and get information on it ====
 EXEC sp_rename 'portfolio_sales_data', 'sales'
 SELECT * from sales
