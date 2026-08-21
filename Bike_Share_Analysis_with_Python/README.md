@@ -1,1 +1,3 @@
+July 2025
+
 This folder contains the exercise done for Udacity's Introduction to Python that I took in July 2025. The zip folder is needed as it contains the three files that the Python code runs on, but they are too big to be added to Github individually. 
