@@ -5,7 +5,7 @@ from utils.data_loader import load_goodbooks_data
 from stable_baselines3 import DQN
 
 # 1. Load real Goodbooks-10k data
-data, book_map = load_goodbooks_data(data_dir="data", top_n_books=50, min_user_ratings=10)
+data = load_goodbooks_data(data_dir="data", top_n_books=50, min_user_ratings=10)
 
 # 2. Instantiate RL Environment (contextual bandit: 1 step per episode)
 env = BookRecEnv(df=data, num_candidates=50)
@@ -46,7 +46,7 @@ print(f"Random baseline:       {random_score:.2f}")
 print(f"DQN agent:             {dqn_score:.2f}")
 
 # 6. Log results to CSV
-row = {"run_label": "10k_books", "dqn": dqn_score, "popularity": popular_score, "random": random_score}
+row = {"run_label": "50-popular-books", "dqn": dqn_score, "popularity": popular_score, "random": random_score}
 csv_path = "outputs/results_log.csv"
 file_exists = os.path.exists(csv_path)
 with open(csv_path, "a", newline="") as f:
