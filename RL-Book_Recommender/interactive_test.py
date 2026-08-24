@@ -1,24 +1,27 @@
 from envs.book_rec_env import BookRecEnv
 from utils.data_loader import load_goodbooks_data
 import pandas as pd
+import os
 from stable_baselines3 import DQN
 
 
 def interactive_session(top_n_books=50):
     print("Loading Goodbooks-10k dataset...")
-    data, book_map = load_goodbooks_data(
-        data_dir="data", top_n_books=top_n_books, min_user_ratings=10
-    )
+    data = load_goodbooks_data(top_n_books=top_n_books, min_user_ratings=10)
 
-    books_df = pd.read_csv("data/books.csv")
+    env = BookRecEnv(df=data, num_candidates=top_n_books)
+    book_map = env.book_map
     inv_book_map = {v: k for k, v in book_map.items()}
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    books_path = os.path.join(script_dir, "data", "books.csv")
+    books_df = pd.read_csv(books_path)
 
     def get_book_title(action_id):
         raw_book_id = inv_book_map[action_id]
         match = books_df[books_df["book_id"] == raw_book_id]
         return match.iloc[0]["title"] if not match.empty else f"Book #{raw_book_id}"
 
-    env = BookRecEnv(df=data, num_candidates=len(book_map))
     print("\nTraining DQN agent for testing...")
     model = DQN("MlpPolicy", env, verbose=0, learning_rate=1e-3)
     model.learn(total_timesteps=5000)
@@ -32,7 +35,7 @@ def interactive_session(top_n_books=50):
     print("Type 'q' to quit at any time.\n")
 
     for round_num in range(1, 11):
-        obs, _ = env.reset()  # samples a fresh real user context
+        obs, _ = env.reset()
         action, _ = model.predict(obs, deterministic=True)
         action = int(action)
         book_title = get_book_title(action)
